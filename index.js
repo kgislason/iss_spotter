@@ -1,18 +1,16 @@
-const { fetchMyIP, fetchCoordsByIP } = require('./iss');
-let myIP = '';
+const { fetchCoordsByIP } = require('./iss');
+let myIP = '38.2.154.4';
 
-fetchMyIP((error, ip) => {
-  if (error) {
-    console.log("It didn't work!" , error);
-    return;
-  }
+// fetchMyIP((error, ip) => {
+//   if (error) {
+//     console.log("It didn't work!" , error);
+//     return;
+//   }
 
-  console.log('It worked! Returned IP:' , ip);
-  myIP = ip;
-  return ip;
-});
-
-console.log('My IP', myIP);
+//   console.log('It worked! Returned IP:' , ip);
+//   myIP = ip;
+//   return ip;
+// });
 
 fetchCoordsByIP(myIP, (error, data) => {
   if (error) {

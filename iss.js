@@ -39,9 +39,7 @@ const fetchMyIP = function (callback) {
  */
 
 const fetchCoordsByIP = (ip, callback) => {
-  let requesURL = 'https://ipwho.is/' + ip;
-  console.log(requesURL);
-  request(requesURL, (error, response, body) => {
+  request(`https://ipwho.is/${ip}`, (error, response, body) => {
     // inside the request callback ...
     // error can be set if invalid domain, user is offline, etc.
     if (error) {
@@ -49,21 +47,28 @@ const fetchCoordsByIP = (ip, callback) => {
       return;
     }
 
+     // if we get here, all's well and we got the data
+     const obj = JSON.parse(body);
+
     // if non-200 status, assume server error
     if (response.statusCode !== 200) {
       const msg = `Status Code ${response.statusCode} when fetching coordinates. Response: ${body}`;
       callback(Error(msg), null);
       return;
+    }   
+
+    if (!obj.success) {
+      const msg = `Success status was ${obj.success}. Server message says: ${obj.message} when fetching for IP ${obj.ip}`;
+      callback(Error(msg), null);
+      return;
     }
 
-    // if we get here, all's well and we got the data
-    const obj = JSON.parse(body);
-    data = {
+    const data = {
       latitude: obj.latitude,
       longitude: obj.longitude
     }
   
-    callback(error, data);
+    callback(null, data);
   });
 };
 
