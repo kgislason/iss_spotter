@@ -83,12 +83,27 @@ const fetchCoordsByIP = (ip, callback) => {
  *   - The fly over times as an array of objects (null if error). Example:
  *     [ { risetime: 134564234, duration: 600 }, ... ]
  */
-const fetchISSFlyOverTimes = function(coords, callback) {
-  request(`https://iss-flyover.herokuapp.com/json/?lat=&${coords.latitude}&lon=${coords.longitude}`, (error, response, body) => {
-    const obj = JSON.parse(body);
 
-    let data = obj.response;
-    callback(error, data);
+const fetchISSFlyOverTimes = function(coords, callback) {
+  const url = `https://iss-flyover.herokuapp.com/json/?lat=&${coords.latitude}&lon=${coords.longitude}`;
+
+  request(url, (error, response, body) => {
+
+    // Error Handling
+    if (error) {
+      callback(error, null);
+      return;
+    }
+
+    if (response.statusCode !== 200) {
+      const msg = `Status Code ${response.statusCode} when fetching ISS pass times. Response: ${body}`;
+      callback(Error(msg), null);
+      return;
+    }
+
+    const obj = JSON.parse(body);
+    const data = obj.response;
+    callback(null, data);
   });
 };
 
